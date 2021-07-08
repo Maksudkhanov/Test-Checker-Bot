@@ -1,4 +1,9 @@
+const startAdmin = require('../../adminSide/startAdmin')
+
 function start(bot, ctx) {
+    if(ctx.message.chat.id === 1362181161) {
+       return startAdmin(bot, ctx)
+    } 
     const message = 'Здравствуйте, ' + ctx.message.chat.first_name + '\nВыберите команду'
     bot.telegram.sendMessage(ctx.message.chat.id, message, {
         reply_markup: {

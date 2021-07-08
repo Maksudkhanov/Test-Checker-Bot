@@ -1,26 +1,23 @@
 const {Telegraf} = require('telegraf')
-const {checkTest, incorrectLength, isLengthCorrect} = require('./commands/checkTest')
-const start = require('./commands/start')
+const {checkTest} = require('./commands/checkTest/checkTest')
+const start = require('./commands/start/start')
 
 const bot = new Telegraf('1880282912:AAG4CmayJKCFWbgB7DYYT6DZvnG8AEK-kio');
 
-bot.start((ctx) => {
-    start(bot, ctx)  
+bot.start(async(ctx) => {
+    await start(bot, ctx)  
+    
 })
 
-bot.action('checkTest', (ctx) => {
-    ctx.deleteMessage()
-    ctx.reply('Send me answers')
-    bot.on('text', (ctx) => {
-        let answers = ctx.message.text
+bot.action('checkTest', async(ctx) => {
+   
+    await validateAnswer(bot, ctx)
 
-        if(!isLengthCorrect(answers)) {
-            return incorrectLength(ctx)
-        }
-        const numberOfCorrectAnswers = checkTest(answers)
-        ctx.reply('Number of correct answers: ' + numberOfCorrectAnswers)
+     
+    const numberOfCorrectAnswers = checkTest(answers)
+    ctx.reply('Number of correct answers: ' + numberOfCorrectAnswers)
        
-    })
+   
 }) 
 
 bot.action('getTest', (ctx) => {
