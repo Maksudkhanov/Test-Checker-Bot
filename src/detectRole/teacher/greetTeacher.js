@@ -19,6 +19,8 @@ function greetTeacher(bot, ctx) {
     ctx.reply('Выберите команду', teacherOptions)
   })
 }
+ 
+
 
 const teacherOptions = {
   reply_markup: {
