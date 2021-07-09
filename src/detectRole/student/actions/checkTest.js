@@ -8,4 +8,4 @@ function checkTest(answers) {
     return correct
 }
 
-module.exports = {checkTest}
+module.exports = checkTest
