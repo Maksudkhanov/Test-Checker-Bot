@@ -3,16 +3,7 @@ const checkTest = require('./actions/checkTest')
 
 async function startForStudents(bot, ctx) {
   const message = 'Здравствуйте, ' + ctx.message.chat.first_name + '\nВыберите команду';
-    ctx.reply(message, {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: 'Проверка тестов', callback_data: 'checkTest' },
-          { text: 'Получение тестов', callback_data: 'getTest' },
-        ],
-      ],
-    },
-  });
+  ctx.reply(message, studentOptions);
 
   bot.action('checkTest', async(ctx) => {
     await ctx.deleteMessage();
@@ -33,6 +24,17 @@ async function startForStudents(bot, ctx) {
     await ctx.deleteMessage();
     await ctx.reply('You got tests!');
   });
+}
+
+const studentOptions = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: 'Проверка тестов', callback_data: 'checkTest' },
+        { text: 'Получение тестов', callback_data: 'getTest' },
+      ],
+    ],
+  }
 }
 
 module.exports = startForStudents;
