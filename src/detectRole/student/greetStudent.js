@@ -1,29 +1,34 @@
 const validateAnswer = require('./actions/validateAnswer')
 const checkTest = require('./actions/checkTest')
 
-async function startForStudents(bot, ctx) {
+  function startForStudents(bot, ctx) {
+  const userId = ctx.message.chat.id
   const message = 'Здравствуйте, ' + ctx.message.chat.first_name + '\nВыберите команду';
-  ctx.reply(message, studentOptions);
+  ctx.telegram.sendMessage(userId, message, studentOptions);
 
   bot.action('checkTest', async(ctx) => {
-    await ctx.deleteMessage();
-    await ctx.reply('Отправьте мне ответы');
+     ctx.deleteMessage();
+     await ctx.telegram.sendMessage(userId, 'Отправьте мне ответы');
   
-    bot.on('text', async(ctx) => {
+    bot.on('text', (ctx) => {
         const answers = ctx.message.text;
 
-        await validateAnswer(answers);
+        validateAnswer(answers);
   
-        const numberOfCorrectAnswers = await checkTest(answers);
-        //saveAnswers()
-        await ctx.reply('Количество правильных ответов: ' + numberOfCorrectAnswers);
+        const numberOfCorrectAnswers =  checkTest(answers);
+        
+        ctx.telegram.sendMessage(userId, 'Количество правильных ответов: ' + numberOfCorrectAnswers);
       });
   });
   
-  bot.action('getTest', async(ctx) => {
-    await ctx.deleteMessage();
-    await ctx.reply('You got tests!');
+  bot.action('getTest', (ctx) => {
+     ctx.deleteMessage();
+     ctx.telegram.sendMessage(userId, 'You got tests!');
   });
+
+  return
+
+ 
 }
 
 const studentOptions = {

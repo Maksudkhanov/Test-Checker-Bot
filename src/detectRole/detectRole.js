@@ -1,14 +1,16 @@
 const teacherId = require('./teacher/teacherId');
-const greetTeacher = require('./teacher/greetTeacher');
+const startTeacher = require('./teacher/startTeacher');
 const greetStudent = require ('./student/greetStudent');
 
 function detectRole(bot, ctx) {
   if (isTeacher(ctx)) {
-    
-    return greetTeacher(bot, ctx);
+    return startTeacher(bot, ctx);
+
+  } else {
+    return greetStudent(bot, ctx);
   }
 
-  return greetStudent(bot, ctx);
+  
 }
 
 function isTeacher(ctx) {

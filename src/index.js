@@ -4,8 +4,14 @@ const detectRole = require("./detectRole/detectRole");
 
 const bot = new Telegraf(token);
 
-bot.start(async (ctx) => {
-  return await detectRole(bot, ctx);
-});
+try {
+  bot.start((ctx) => {
+    return detectRole(bot, ctx);
+  });
+} catch (error) {
+  console.log(error.message);
+  return detectRole(bot, ctx);
+}
+
 
 bot.launch();
