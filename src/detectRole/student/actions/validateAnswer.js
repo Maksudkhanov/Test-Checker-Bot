@@ -1,4 +1,4 @@
-function validateAnswer(answers) {
+function validateAnswer(ctx, answers) {
  
     if (!isLengthCorrect(answers)) {
       return invalidLength(ctx);
@@ -6,6 +6,8 @@ function validateAnswer(answers) {
     if (!isLetter(answers)) {
       return invalidLetters(ctx);
     }
+
+    return 'isValid';
 }
 
 function isLetter(answers) {
@@ -19,7 +21,7 @@ function isLengthCorrect(answers) {
 function invalidLength(ctx) {
   ctx.reply("Неправильное количество ответов", {
     reply_markup: {
-      inline_keyboard: [[{ text: "Send again", callback_data: "checkTest" }]],
+      inline_keyboard: [[{ text: "Отправить заново", callback_data: "checkTest" }]],
     },
   });
 }

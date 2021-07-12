@@ -1,48 +1,84 @@
-function createTest(bot, ctx, userId) {
-    chooseNumberOfQuestions(bot, ctx, userId)
+function createTest(bot, ctx, userId, sendStartOptions, startOptions, testAnswers) {
+    chooseLengthOfTest(ctx, userId)
+    processLengthOfTest(bot, userId, sendStartOptions, startOptions, testAnswers)  
 }
 
-function chooseNumberOfQuestions(bot, ctx, userId) {
+
+function chooseLengthOfTest(ctx, userId) {
     ctx.deleteMessage();
-
     const message = 'Выберите количество вопросов';
-    ctx.telegram.sendMessage(userId, message, testLengthOptions);
-
-    bot.action('generateTest', (ctx) => {
-        generateTest(bot, ctx, userId, numberOfQuestions)
-    })
-
-    bot.on('callback_query', async(ctx) => {
-       
-        numberOfQuestions = ctx.update.callback_query.data;
-
-        await sendConfirmation(ctx, userId, numberOfQuestions);  
-    })
+    ctx.telegram.sendMessage(userId, message, testLengthOptions);  
 }
+
+
+function processLengthOfTest(bot, userId, sendStartOptions, startOptions, testAnswers ) {
+    bot.action('backToStartOptions', (ctx) => {
+        ctx.deleteMessage();
+        sendStartOptions(bot, ctx, userId, startOptions)
+      })
+    
+    bot.action('generateTest', (ctx) => {
+        generateTest(bot, ctx, userId, numberOfQuestions, testAnswers)
+    })
+
+    bot.on('callback_query', (ctx) => {
+        numberOfQuestions = ctx.update.callback_query.data;
+        sendConfirmation(ctx, userId, numberOfQuestions); 
+    })
+
+    
+}
+
 
 function sendConfirmation(ctx, userId, numberOfQuestions) {
     ctx.deleteMessage()
-    return ctx.telegram.sendMessage(userId, 'Количество вопросов: ' + numberOfQuestions, confirmationOptions)
+    ctx.telegram.sendMessage(userId, 'Количество вопросов: ' + numberOfQuestions, confirmationOptions)
 }
 
-function generateTest(bot, ctx, userId, numberOfQuestions) {
+
+function generateTest(bot, ctx, userId, numberOfQuestions, testAnswers) {
     ctx.telegram.sendMessage(userId, 'Отправьте мне ответы');
 
     bot.on('text', (ctx) => {
-        compareWithOfChoosenLength(bot, ctx, userId, numberOfQuestions)
-
-
+        
+        const inputAnswers = ctx.update.message.text;
+        const inputAnswersLength = inputAnswers.length;
+       
+        const status = validateInputAnswers(bot, ctx, userId, numberOfQuestions, inputAnswers, inputAnswersLength) 
+        if(status === 'isValid') {
+            createAnswers(ctx, userId, testAnswers, inputAnswers, inputAnswersLength)
+        }   
     })
-
 }
 
-function compareWithOfChoosenLength(bot, ctx, userId, numberOfQuestions) {
-    let answersLength = ctx.message.text.length;
 
-    if(answersLength !== numberOfQuestions) {
+function validateInputAnswers(bot, ctx, userId, numberOfQuestions, inputAnswers, inputAnswersLength) {
+    
+    if(Number(numberOfQuestions) !== inputAnswersLength) {
         ctx.telegram.sendMessage(userId, 'Неправильное количество ответов')
         return generateTest(bot, ctx, userId, numberOfQuestions)
     }
+
+    if(!isLetter(inputAnswers)) {
+        ctx.telegram.sendMessage(userId, 'Недопустимые символы')
+        return generateTest(bot, ctx, userId, numberOfQuestions)
+    }
+
+    return 'isValid'
+}
+
+function isLetter(answers) {
+    return /[A-Za-z]/.test(answers);
+}
+
+
+function createAnswers(ctx, userId, testAnswers, inputAnswers, inputAnswersLength) {
+
+    for(let i=0; i<inputAnswersLength; i++) {
+        testAnswers[i] = inputAnswers[i]
+    };
+
+    ctx.telegram.sendMessage(userId, 'Ответы сохранены: ' + testAnswers)
 }
 
 const testLengthOptions = {
@@ -62,12 +98,13 @@ const testLengthOptions = {
                 { text: 'Другое количество вопросов', callback_data: 'asd' }
             ],
             [
-                { text: '⬅️ Назад', callback_data: 'greetTeacher' }
+                { text: '⬅️ Назад', callback_data: 'backToStartOptions' }
             ]
         ],
         one_time_keyboard: true
     }
 }
+
 
 const confirmationOptions = {
     reply_markup: {
@@ -81,5 +118,6 @@ const confirmationOptions = {
         one_time_keyboard: true
     }
 }
+
 
 module.exports = createTest;

@@ -1,33 +1,40 @@
-const createTest = require('./actions/createTest')
+const createTest = require('./actions/createTest');
 
-function startTeacher(bot, ctx) {
+
+function startTeacher(bot, ctx, testAnswers) {
   const userId = ctx.message.chat.id;
   const userFirstName = ctx.message.chat.first_name;
 
-  greetTeacher(ctx, userId, userFirstName)
-
-  sendCommandForTest(bot, ctx, userId, teacherOptions)
+  greetTeacher(ctx, userId, userFirstName);
+  sendStartOptions(bot, ctx, userId, testAnswers);
 }
+
 
 function greetTeacher(ctx, userId, userFirstName) {
-  return ctx.telegram.sendMessage(userId, 'Здравствуйте, ' + userFirstName)
+  return ctx.telegram.sendMessage(userId, 'Здравствуйте, ' + userFirstName);
 }
 
-function sendCommandForTest(bot, ctx, userId, teacherOptions) {
+
+function sendStartOptions(bot, ctx, userId, testAnswers) {
+  chooseStartOptions(ctx, userId);
+  processStartOptions(bot, userId, testAnswers);
+}
+
+
+function chooseStartOptions(ctx, userId) {
   const message = 'Выберите команду';
-  ctx.telegram.sendMessage(userId, message, teacherOptions);
+  ctx.telegram.sendMessage(userId, message, startOptions);
+}
 
+
+function processStartOptions(bot, userId, testAnswers) {
   bot.action('createTest', (ctx) => {
-    createTest(bot, ctx, userId);
-  })
-
-  bot.action('greetTeacher', (ctx) => {
-    ctx.deleteMessage();
-    sendCommandForTest(bot, ctx, userId, teacherOptions)
+    createTest(bot, ctx, userId, sendStartOptions, startOptions, testAnswers);
   })
 }
 
-const teacherOptions = {
+
+const startOptions = {
   reply_markup: {
     inline_keyboard: [
       [
@@ -38,7 +45,7 @@ const teacherOptions = {
     ],
     one_time_keyboard: true
   }
-}
+};
 
 
-module.exports = startTeacher
+module.exports = startTeacher;

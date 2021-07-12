@@ -13,11 +13,14 @@ const checkTest = require('./actions/checkTest')
     bot.on('text', (ctx) => {
         const answers = ctx.message.text;
 
-        validateAnswer(answers);
+        const resultOfValidating = validateAnswer(ctx, answers);
+
+        if(resultOfValidating === 'isValid') {
+          const numberOfCorrectAnswers =  checkTest(answers);
+          return ctx.telegram.sendMessage(userId, 'Количество правильных ответов: ' + numberOfCorrectAnswers);
+        }
   
-        const numberOfCorrectAnswers =  checkTest(answers);
-        
-        ctx.telegram.sendMessage(userId, 'Количество правильных ответов: ' + numberOfCorrectAnswers);
+              
       });
   });
   
