@@ -11,7 +11,7 @@ function startForStudents(bot, ctx) {
         ctx.deleteMessage();
         await ctx.telegram.sendMessage(userId, 'Отправьте мне ответы');
   
-        bot.on('text', (ctx) => {
+        bot.on('text', async(ctx) => {
             const answers = ctx.message.text;
 
             const resultOfValidating = validateAnswer(ctx, answers, testAnswers);
@@ -25,7 +25,7 @@ function startForStudents(bot, ctx) {
         });
     });
   
-    bot.action('getTest', (ctx) => {
+    bot.action('getTest', async(ctx) => {
         ctx.deleteMessage();
         ctx.telegram.sendMessage(userId, 'You got tests!');
     });

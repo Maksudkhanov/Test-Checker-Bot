@@ -12,17 +12,17 @@ function chooseLengthOfTest(ctx, userId) {
 
 
 function processLengthOfTest(bot, userId, sendStartOptions, startOptions, testAnswers ) {
-    bot.action('backToStartOptions', (ctx) => {
+    bot.action('backToStartOptions', async(ctx) => {
         ctx.deleteMessage();
         sendStartOptions(bot, ctx, userId, startOptions);
     });
 
-    bot.on('callback_query', (ctx) => {
+    bot.on('callback_query', async(ctx) => {
         const numberOfQuestions = ctx.update.callback_query.data;
         sendConfirmation(ctx, userId, numberOfQuestions); 
     });
 
-    bot.action('generateTest', (ctx) => {
+    bot.action('generateTest', async(ctx) => {
         // eslint-disable-next-line no-undef
         generateTest(bot, ctx, userId, numberOfQuestions, testAnswers);
     });
@@ -38,7 +38,7 @@ function sendConfirmation(ctx, userId, numberOfQuestions) {
 function generateTest(bot, ctx, userId, numberOfQuestions, testAnswers) {
     ctx.telegram.sendMessage(userId, 'Отправьте мне ответы');
 
-    bot.on('text', (ctx) => {
+    bot.on('text', async(ctx) => {
         
         const inputAnswers = ctx.update.message.text;
         const inputAnswersLength = inputAnswers.length;

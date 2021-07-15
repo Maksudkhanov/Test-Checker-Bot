@@ -1,3 +1,3 @@
-const teacherId = 1362181161;
+const teacherId = 'Teacher ID';
 
 export default teacherId;

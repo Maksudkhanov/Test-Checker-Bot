@@ -27,7 +27,7 @@ function chooseStartOptions(ctx, userId) {
 
 
 function processStartOptions(bot, userId, testAnswers) {
-    bot.action('createTest', (ctx) => {
+    bot.action('createTest', async(ctx) => {
         createTest(bot, ctx, userId, sendStartOptions, startOptions, testAnswers);
     });
 }
