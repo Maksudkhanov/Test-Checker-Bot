@@ -1,11 +1,11 @@
 function checkTest(answers, testAnswers) {
-  let correct = 0;
-  for (let i = 0; i < answers.length; i++) {
-    if (answers[i] === testAnswers[i]) {
-      correct++;
+    let correct = 0;
+    for (let i = 0; i < answers.length; i++) {
+        if (answers[i] === testAnswers[i]) {
+            correct++;
+        }
     }
-  }
-  return correct;
+    return correct;
 }
 
-module.exports = checkTest;
+export default checkTest;

@@ -1,6 +1,6 @@
 function createTest(bot, ctx, userId, sendStartOptions, startOptions, testAnswers) {
-    chooseLengthOfTest(ctx, userId)
-    processLengthOfTest(bot, userId, sendStartOptions, startOptions, testAnswers)  
+    chooseLengthOfTest(ctx, userId);
+    processLengthOfTest(bot, userId, sendStartOptions, startOptions, testAnswers);  
 }
 
 
@@ -14,25 +14,24 @@ function chooseLengthOfTest(ctx, userId) {
 function processLengthOfTest(bot, userId, sendStartOptions, startOptions, testAnswers ) {
     bot.action('backToStartOptions', (ctx) => {
         ctx.deleteMessage();
-        sendStartOptions(bot, ctx, userId, startOptions)
-      })
-    
-    bot.action('generateTest', (ctx) => {
-        generateTest(bot, ctx, userId, numberOfQuestions, testAnswers)
-    })
+        sendStartOptions(bot, ctx, userId, startOptions);
+    });
 
     bot.on('callback_query', (ctx) => {
-        numberOfQuestions = ctx.update.callback_query.data;
+        const numberOfQuestions = ctx.update.callback_query.data;
         sendConfirmation(ctx, userId, numberOfQuestions); 
-    })
+    });
 
-    
+    bot.action('generateTest', (ctx) => {
+        // eslint-disable-next-line no-undef
+        generateTest(bot, ctx, userId, numberOfQuestions, testAnswers);
+    });
 }
 
 
 function sendConfirmation(ctx, userId, numberOfQuestions) {
-    ctx.deleteMessage()
-    ctx.telegram.sendMessage(userId, 'Количество вопросов: ' + numberOfQuestions, confirmationOptions)
+    ctx.deleteMessage();
+    ctx.telegram.sendMessage(userId, 'Количество вопросов: ' + numberOfQuestions, confirmationOptions);
 }
 
 
@@ -44,27 +43,27 @@ function generateTest(bot, ctx, userId, numberOfQuestions, testAnswers) {
         const inputAnswers = ctx.update.message.text;
         const inputAnswersLength = inputAnswers.length;
        
-        const status = validateInputAnswers(bot, ctx, userId, numberOfQuestions, inputAnswers, inputAnswersLength) 
+        const status = validateInputAnswers(bot, ctx, userId, numberOfQuestions, inputAnswers, inputAnswersLength); 
         if(status === 'isValid') {
-            createAnswers(ctx, userId, testAnswers, inputAnswers, inputAnswersLength)
+            createAnswers(ctx, userId, testAnswers, inputAnswers, inputAnswersLength);
         }   
-    })
+    });
 }
 
 
 function validateInputAnswers(bot, ctx, userId, numberOfQuestions, inputAnswers, inputAnswersLength) {
     
-    if(Number(numberOfQuestions) !== inputAnswersLength) {
-        ctx.telegram.sendMessage(userId, 'Неправильное количество ответов')
-        return generateTest(bot, ctx, userId, numberOfQuestions)
+    if(Number(numberOfQuestions) === inputAnswersLength) {
+        ctx.telegram.sendMessage(userId, 'Неправильное количество ответов');
+        return generateTest(bot, ctx, userId, numberOfQuestions);
     }
 
     if(!isLetter(inputAnswers)) {
-        ctx.telegram.sendMessage(userId, 'Недопустимые символы')
-        return generateTest(bot, ctx, userId, numberOfQuestions)
+        ctx.telegram.sendMessage(userId, 'Недопустимые символы');
+        return generateTest(bot, ctx, userId, numberOfQuestions);
     }
 
-    return 'isValid'
+    return 'isValid';
 }
 
 function isLetter(answers) {
@@ -75,10 +74,10 @@ function isLetter(answers) {
 function createAnswers(ctx, userId, testAnswers, inputAnswers, inputAnswersLength) {
 
     for(let i=0; i<inputAnswersLength; i++) {
-        testAnswers[i] = inputAnswers[i]
-    };
+        testAnswers[i] = inputAnswers[i];
+    }
 
-    ctx.telegram.sendMessage(userId, 'Ответы сохранены: ' + testAnswers)
+    ctx.telegram.sendMessage(userId, 'Ответы сохранены: ' + testAnswers);
 }
 
 const testLengthOptions = {
@@ -103,7 +102,7 @@ const testLengthOptions = {
         ],
         one_time_keyboard: true
     }
-}
+};
 
 
 const confirmationOptions = {
@@ -117,7 +116,7 @@ const confirmationOptions = {
         ],
         one_time_keyboard: true
     }
-}
+};
 
 
-module.exports = createTest;
+export default createTest;

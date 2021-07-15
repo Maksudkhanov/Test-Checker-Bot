@@ -1,3 +1,3 @@
 const teacherId = 1362181161;
 
-module.exports = teacherId;
+export default teacherId;

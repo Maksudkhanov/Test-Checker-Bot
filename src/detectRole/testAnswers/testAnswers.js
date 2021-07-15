@@ -1,3 +1,3 @@
 const testAnswers = [];
 
-module.exports = testAnswers;
+export default testAnswers;
