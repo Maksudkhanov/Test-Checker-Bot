@@ -1,6 +1,6 @@
-function validateAnswer(ctx, answers) {
+function validateAnswer(ctx, answers, testAnswers) {
  
-    if (!isLengthCorrect(answers)) {
+    if (!isLengthCorrect(answers, testAnswers)) {
       return invalidLength(ctx);
     }
     if (!isLetter(answers)) {
@@ -14,8 +14,8 @@ function isLetter(answers) {
   return /[A-Za-z]/.test(answers);
 }
 
-function isLengthCorrect(answers) {
-  return answers.length === 3;
+function isLengthCorrect(answers, testAnswers) {
+  return answers.length === testAnswers.length;
 }
 
 function invalidLength(ctx) {

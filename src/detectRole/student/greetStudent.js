@@ -1,5 +1,6 @@
 const validateAnswer = require('./actions/validateAnswer')
 const checkTest = require('./actions/checkTest')
+const testAnswers = require('../testAnswers/testAnswers')
 
   function startForStudents(bot, ctx) {
   const userId = ctx.message.chat.id
@@ -13,10 +14,10 @@ const checkTest = require('./actions/checkTest')
     bot.on('text', (ctx) => {
         const answers = ctx.message.text;
 
-        const resultOfValidating = validateAnswer(ctx, answers);
+        const resultOfValidating = validateAnswer(ctx, answers, testAnswers);
 
         if(resultOfValidating === 'isValid') {
-          const numberOfCorrectAnswers =  checkTest(answers);
+          const numberOfCorrectAnswers =  checkTest(answers, testAnswers);
           return ctx.telegram.sendMessage(userId, 'Количество правильных ответов: ' + numberOfCorrectAnswers);
         }
   
@@ -31,7 +32,6 @@ const checkTest = require('./actions/checkTest')
 
   return
 
- 
 }
 
 const studentOptions = {
